@@ -11,7 +11,8 @@ To deploy, you will need a resonably recent version of python 3.
 
 To install the dependencies use pip:
 ```
-python3 -m pip install -r requirements.txt
+cd deploy
+pipenv install -r requirements.txt 
 ```
 
 In order to deploy you will need to :
@@ -23,5 +24,6 @@ The secret key file is excluded from github. There is one config file per deploy
 
 The deployment command is 
 ```
-python3 deploy.py --config testnet.conf
+cd deploy
+pipenv run python3 deploy.py --config testnet.conf
 ```
