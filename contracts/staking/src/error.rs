@@ -1,4 +1,5 @@
 use cosmwasm_std::{StdError, Uint128};
+use cw20::Denom;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -20,4 +21,10 @@ pub enum ContractError {
         available: Uint128,
         requested: Uint128,
     },
+
+    #[error("No reward sent")]
+    NoReward {},
+
+    #[error("No reward sent")]
+    InvalidRewardDenomination { expected: Denom, received: Denom },
 }

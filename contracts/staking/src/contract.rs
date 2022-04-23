@@ -1,7 +1,9 @@
 use crate::{executions, queries};
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
-use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
+use cosmwasm_std::{
+    to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult, Uint128,
+};
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
@@ -23,6 +25,7 @@ pub fn instantiate(
     let state = State {
         incensitive_denom: msg.incensitive_denom,
         stakable_denom: msg.stakable_denom,
+        total_stacked: Uint128::zero(),
     };
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
     STATE.save(deps.storage, &state)?;
@@ -46,6 +49,7 @@ pub fn execute(
     match msg {
         ExecuteMsg::Receive(msg) => executions::receive_cw20(deps, info, msg),
         ExecuteMsg::Withdraw { amount } => executions::withdraw_cw20(deps, info, amount),
+        ExecuteMsg::Reward {} => executions::deposit_rewards(deps, info),
     }
 }
 
@@ -56,5 +60,6 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
             let validate_address = deps.api.addr_validate(&address)?;
             to_binary(&queries::balance(deps, validate_address)?)
         }
+        QueryMsg::TotalDeposited {} => to_binary(&queries::total_stacked(deps)?),
     }
 }

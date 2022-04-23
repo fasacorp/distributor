@@ -20,6 +20,9 @@ pub enum ExecuteMsg {
 
     /// Withdraw the deposited assets
     Withdraw { amount: Uint128 },
+
+    /// Deposit reward for the stakers
+    Reward {},
 }
 /// The Receive message is used to handle CW20 being sent to this contract
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -34,6 +37,9 @@ pub enum ReceiveMsg {
 pub enum QueryMsg {
     /// Get the balance for the given address, including accrued earnings
     Balance { address: String },
+
+    /// Total amount stacked
+    TotalDeposited {},
 }
 
 // We define a custom struct for each query response
@@ -41,6 +47,9 @@ pub enum QueryMsg {
 pub struct BalanceResponse {
     pub amount: Uint128,
     pub denom: Denom,
-    pub earned: Uint128,
-    pub earned_denom: Denom,
+}
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct TotalStackedResponse {
+    pub amount: Uint128,
+    pub denom: Denom,
 }

@@ -12,6 +12,9 @@ pub struct State {
 
     /// cw20 token that can be stacked on this contract
     pub stakable_denom: Denom,
+
+    /// The total amount deposited in this contract
+    pub total_stacked: Uint128,
 }
 /// The contract state
 pub const STATE: Item<State> = Item::new("state");
@@ -21,7 +24,6 @@ pub const STATE: Item<State> = Item::new("state");
 pub struct Deposit {
     pub amount: Uint128,
     pub owner: Addr,
-    pub earned: Uint128,
 }
 impl Deposit {
     /// create a new deposit entry
@@ -29,7 +31,6 @@ impl Deposit {
         Deposit {
             amount: Uint128::zero(),
             owner,
-            earned: Uint128::zero(),
         }
     }
 }

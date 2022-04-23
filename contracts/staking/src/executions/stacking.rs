@@ -17,7 +17,7 @@ fn deposit_cw20(
     let sender = deps.api.addr_validate(&wrapper.sender)?;
 
     // reject deposit of an unexpected type
-    let state = STATE.load(deps.storage)?;
+    let mut state = STATE.load(deps.storage)?;
     if state.stakable_denom != denom_received {
         return Err(ContractError::UnsupportedDeposit {
             denom: denom_stringify(&denom_received),
@@ -35,6 +35,11 @@ fn deposit_cw20(
             Ok(entry)
         },
     )?;
+
+    // increase the total deposited in this contract
+    state.total_stacked += amount_received;
+    STATE.save(deps.storage, &state)?;
+
     Ok(Response::new().add_attribute("method", "deposit"))
 }
 /// Deposit the asset being stacked
@@ -57,7 +62,7 @@ pub fn withdraw_cw20(
     info: MessageInfo,
     amount: Uint128,
 ) -> Result<Response, ContractError> {
-    let state = STATE.load(deps.storage)?;
+    let mut state = STATE.load(deps.storage)?;
     // Try to load the deposit from the sender
     let potential_deposit = DEPOSITED.may_load(deps.storage, info.sender.to_string())?;
     if let Some(mut deposit) = potential_deposit {
@@ -69,19 +74,16 @@ pub fn withdraw_cw20(
             });
         }
         // send the cw20 token
-        let mut response = Response::new()
-            .add_attribute("method", "deposit")
-            .add_submessage(send_balance(&deposit.owner, amount, state.stakable_denom)?);
+        let transfer_msg = send_balance(&deposit.owner, amount, state.stakable_denom.clone())?;
 
         // update balance
         deposit.amount -= amount;
+
+        // Decrease the total stacked
+        state.total_stacked -= amount;
+        STATE.save(deps.storage, &state)?;
+
         if deposit.amount.is_zero() {
-            // if the new balance is 0 withdraw earnings too before destroying the entry
-            response = response.add_submessage(send_balance(
-                &deposit.owner,
-                deposit.earned,
-                state.incensitive_denom,
-            )?);
             // we don't need this anymore
             DEPOSITED.remove(deps.storage, info.sender.to_string());
         } else {
@@ -89,7 +91,10 @@ pub fn withdraw_cw20(
         }
 
         // done desu !
-        Ok(response.add_attribute("new balance", deposit.amount))
+        Ok(Response::new()
+            .add_attribute("method", "deposit")
+            .add_submessage(transfer_msg)
+            .add_attribute("new balance", deposit.amount))
     } else {
         // we have nothing for this address, return an err
         Err(ContractError::NoWithdrawableBalance {})
