@@ -1,7 +1,6 @@
-use crate::state::{DEPOSITED, STATE};
-use crate::utils::send_balance;
+use crate::state::{DEPOSITED, STATE, EARNED, Balance};
 use crate::ContractError;
-use cosmwasm_std::{Decimal, DepsMut, MessageInfo, Order, Response, SubMsg};
+use cosmwasm_std::{Decimal, DepsMut, MessageInfo, Order, Response, Uint128, Addr, StdResult};
 use cw20::Denom;
 
 /// Deposit the rewards
@@ -21,21 +20,31 @@ pub fn deposit_rewards(deps: DepsMut, info: MessageInfo) -> Result<Response, Con
             received: received_denom,
         });
     }
-    // Generate all the transfers
+    // Generate the earnings per address
     // The amount a staker is entitled to is :
     // incensitive = total_received * (stacked / total stacked)
-
-    let transfers: Vec<SubMsg> = DEPOSITED
+    let earnings: Vec<(Addr,Uint128)> = DEPOSITED
         .range(deps.storage, None, None, Order::Ascending)
-        .map(|entry| -> SubMsg {
+        .map(|entry|  -> (Addr,Uint128) {
             let (_, deposit) = entry.unwrap();
             let ratio = Decimal::from_ratio(deposit.amount, state.total_stacked);
             let incensitive_amount = received.amount * ratio;
-            send_balance(&deposit.owner, incensitive_amount, received_denom.clone()).unwrap()
-        })
-        .collect();
+            (deposit.owner.clone(), incensitive_amount)
+            }).collect();
+
+    // Update earnings 
+    earnings.into_iter().for_each(|(owner,amount)| {
+        EARNED.update(deps.storage, owner.to_string(), |maybe_balance| -> StdResult<Balance>{
+            let mut balance = match maybe_balance {
+                Some(balance)=> balance,
+                None=> Balance::new(owner),
+            };
+            balance.amount += amount;
+            Ok(balance)
+        }).unwrap();
+    });
 
     Ok(Response::new()
         .add_attribute("method", "deposit_rewards")
-        .add_submessages(transfers))
+        )
 }

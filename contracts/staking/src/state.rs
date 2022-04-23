@@ -21,14 +21,14 @@ pub const STATE: Item<State> = Item::new("state");
 
 /// A deposit record used to keep track of who owns what and how much was earned
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct Deposit {
+pub struct Balance {
     pub amount: Uint128,
     pub owner: Addr,
 }
-impl Deposit {
+impl Balance {
     /// create a new deposit entry
-    pub fn new(owner: Addr) -> Deposit {
-        Deposit {
+    pub fn new(owner: Addr) -> Balance {
+        Balance {
             amount: Uint128::zero(),
             owner,
         }
@@ -36,4 +36,7 @@ impl Deposit {
 }
 
 /// The stacked asset within this contract
-pub const DEPOSITED: Map<String, Deposit> = Map::new("total_supply");
+pub const DEPOSITED: Map<String, Balance> = Map::new("deposited");
+
+/// The earned reward 
+pub const EARNED: Map<String, Balance> = Map::new("earned");

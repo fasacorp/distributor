@@ -1,4 +1,4 @@
-use crate::state::{Deposit, DEPOSITED};
+use crate::state::{Balance, DEPOSITED};
 use crate::utils::{denom_stringify, send_balance};
 use crate::ContractError;
 use crate::{msg::ReceiveMsg, state::STATE};
@@ -29,8 +29,8 @@ fn deposit_cw20(
     DEPOSITED.update(
         deps.storage,
         sender.to_string(),
-        |deposit| -> StdResult<Deposit> {
-            let mut entry = deposit.unwrap_or_else(|| Deposit::new(sender));
+        |deposit| -> StdResult<Balance> {
+            let mut entry = deposit.unwrap_or_else(|| Balance::new(sender));
             entry.amount += amount_received;
             Ok(entry)
         },
