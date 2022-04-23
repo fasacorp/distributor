@@ -38,5 +38,5 @@ impl Balance {
 /// The stacked asset within this contract
 pub const DEPOSITED: Map<String, Balance> = Map::new("deposited");
 
-/// The earned reward 
+/// The earned reward
 pub const EARNED: Map<String, Balance> = Map::new("earned");
