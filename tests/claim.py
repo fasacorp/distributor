@@ -23,40 +23,38 @@ def get_client_wallet(secret):
         wallet = lcd.wallet(MnemonicKey(memo_phrase))  
         return lcd, wallet
 
-def reward(lcd, wallet, reward_contract, balance, gas_price):
+def claim(lcd, wallet, reward_contract, gas_price):
     # Generate reward deposit message
     execution_msg = {
-        "reward": {}
+        "claim": {}
     }
     msg = MsgExecuteContract(
         wallet.key.acc_address,
         reward_contract,
-        execution_msg,
-        balance
+        execution_msg,        
     )       
-    logging.info("Sending rewards %s", balance)
+    logging.info("Claiming rewards")
     execute_tx = wallet.create_and_sign_tx(
         CreateTxOptions(msgs=[msg], gas_prices=gas_price, gas_adjustment="2"))
     execute_tx_result = lcd.tx.broadcast(execute_tx)   
     if execute_tx_result.is_tx_error():
-        logging.warning("Sending failed!")
+        logging.warning("Claiming failed!")
         logging.warning("%s", execute_tx_result)
-        raise Exception("Send failed")
+        raise Exception("Claim failed")
     else:
-        logging.info("Sending successful")
+        logging.info("Claim successful")
 
-def main(reward_contract, balance, gas_price, secret):    
+def main(reward_contract, gas_price, secret):    
     # build lcd and wallet objects
     lcd, wallet = get_client_wallet(secret)
-    reward(lcd, wallet, reward_contract, balance, gas_price)
+    claim(lcd, wallet, reward_contract, gas_price)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run deposit tests on the testnet')
-    parser.add_argument('--reward_contract', type=str, help='The address of the reward contract', required=True)
-    parser.add_argument('--balance', type=str, help='The balance to send to the reward contract eg: 1000uusd', required=True)
+    parser.add_argument('--reward_contract', type=str, help='The address of the reward contract', required=True)    
     parser.add_argument('--gas_price', type=str, help='The gas price to use', required=False, default='0.15uusd')    
     parser.add_argument('--secret', type=str, help='The secret key to use', required=False, default='secret_1.key')    
 
     args = parser.parse_args()
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
-    main(args.reward_contract, args.balance, args.gas_price, args.secret)
+    main(args.reward_contract, args.gas_price, args.secret)

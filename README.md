@@ -48,7 +48,18 @@ The secret key file is excluded from github.
 The test command should look like this:
 ```sh
 pipenv shell
+# stake token
+python3 deposit.py --reward_contract $REWARD --cw20_contract $TOKEN --amount 2000 --secret secret_1.key
 python3 deposit.py --reward_contract $REWARD --cw20_contract $TOKEN --amount 1000 --secret secret_2.key
+python3 reward.py --reward_contract $REWARD --balance 1000uusd
+
+# Claim accrued reward
+python3 claim.py --reward_contract $REWARD --secret secret_1.key
+python3 claim.py --reward_contract $REWARD --secret secret_2.key
+
+# unstake token
+python3 withdraw.py --reward_contract $REWARD --amount 1000 --secret secret_1.key
+python3 withdraw.py --reward_contract $REWARD --amount 1000 --secret secret_1.key
 python3 withdraw.py --reward_contract $REWARD --amount 1000 --secret secret_2.key
 ```
 
