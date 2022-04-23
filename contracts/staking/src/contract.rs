@@ -62,5 +62,10 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
             to_binary(&queries::balance(deps, validate_address)?)
         }
         QueryMsg::TotalDeposited {} => to_binary(&queries::total_stacked(deps)?),
+        QueryMsg::Earned { address } => {
+            let validate_address = deps.api.addr_validate(&address)?;
+            to_binary(&queries::earned(deps, validate_address)?)
+        }
+
     }
 }

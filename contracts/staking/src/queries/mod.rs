@@ -1,7 +1,7 @@
 use cosmwasm_std::{Addr, Deps, StdResult, Uint128};
 
 use crate::msg::{BalanceResponse, TotalStackedResponse};
-use crate::state::{DEPOSITED, STATE};
+use crate::state::{DEPOSITED, STATE, EARNED};
 
 /// Check the balance for the given address
 pub fn balance(deps: Deps, address: Addr) -> StdResult<BalanceResponse> {
@@ -26,4 +26,21 @@ pub fn total_stacked(deps: Deps) -> StdResult<TotalStackedResponse> {
         amount: state.total_stacked,
         denom: state.stakable_denom,
     })
+}
+
+/// Return the accumulated earnings
+pub fn earned(deps: Deps, address: Addr) -> StdResult<BalanceResponse> {
+    let state = STATE.load(deps.storage)?;
+    let accrued = EARNED.may_load(deps.storage, address.to_string())?;
+    if let Some(earned) = accrued {
+        return Ok(BalanceResponse {
+            amount: earned.amount,
+            denom: state.incensitive_denom,
+        });
+    }
+    Ok(BalanceResponse {
+        amount: Uint128::zero(),
+        denom: state.incensitive_denom,
+    })
+    
 }
