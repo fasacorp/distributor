@@ -30,7 +30,7 @@ pub fn deposit_rewards(deps: DepsMut, info: MessageInfo) -> Result<Response, Con
             let (_, deposit) = entry.unwrap();
             let ratio = Decimal::from_ratio(deposit.amount, state.total_stacked);
             let incensitive_amount = received.amount * ratio;
-            (deposit.owner.clone(), incensitive_amount)
+            (deposit.owner, incensitive_amount)
         })
         .collect();
 
