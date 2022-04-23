@@ -1,7 +1,7 @@
 use cosmwasm_std::{Addr, Deps, StdResult, Uint128};
 
 use crate::msg::{BalanceResponse, TotalStackedResponse};
-use crate::state::{DEPOSITED, STATE, EARNED};
+use crate::state::{DEPOSITED, EARNED, STATE};
 
 /// Check the balance for the given address
 pub fn balance(deps: Deps, address: Addr) -> StdResult<BalanceResponse> {
@@ -42,5 +42,4 @@ pub fn earned(deps: Deps, address: Addr) -> StdResult<BalanceResponse> {
         amount: Uint128::zero(),
         denom: state.incensitive_denom,
     })
-    
 }

@@ -66,6 +66,5 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
             let validate_address = deps.api.addr_validate(&address)?;
             to_binary(&queries::earned(deps, validate_address)?)
         }
-
     }
 }

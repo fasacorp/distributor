@@ -45,7 +45,7 @@ pub enum QueryMsg {
     TotalDeposited {},
 
     /// Accrued earnings from rewards
-    Earned{ address: String },
+    Earned { address: String },
 }
 
 // We define a custom struct for each query response
