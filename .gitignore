@@ -16,7 +16,7 @@ artifacts
 .idea
 
 # ignore any private key
-secret.key
+*.key
 
 #python virtualenv
 deploy/venv/
