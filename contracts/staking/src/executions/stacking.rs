@@ -67,7 +67,7 @@ pub fn withdraw_cw20(
     let potential_deposit = DEPOSITED.may_load(deps.storage, info.sender.to_string())?;
     if let Some(mut deposit) = potential_deposit {
         // ensure we are not withdrawing more than available for this address
-        if deposit.amount <= amount {
+        if deposit.amount < amount {
             return Err(ContractError::InvalidWithdrawal {
                 available: deposit.amount,
                 requested: amount,
