@@ -24,6 +24,9 @@ pub fn deposit_rewards(deps: DepsMut, info: MessageInfo) -> Result<Response, Con
     // Generate the earnings per address
     // The amount a staker is entitled to is :
     // incensitive = total_received * (stacked / total stacked)
+
+    // NOTE: necessary to disbale due to deps storage borrow.
+    #[allow(clippy::needless_collect)]
     let earnings: Vec<(Addr, Uint128)> = DEPOSITED
         .range(deps.storage, None, None, Order::Ascending)
         .map(|entry| -> (Addr, Uint128) {
