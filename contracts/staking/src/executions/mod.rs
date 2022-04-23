@@ -1,3 +1,3 @@
 mod stacking;
 
-pub use stacking::{deposit_cw20, withdraw_cw20};
+pub use stacking::{receive_cw20, withdraw_cw20};

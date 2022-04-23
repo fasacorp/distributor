@@ -31,7 +31,7 @@ pub fn send_balance(to: &Addr, amount: Uint128, asset: Denom) -> StdResult<SubMs
             }
             let msg = Cw20ExecuteMsg::Transfer {
                 recipient: to.into(),
-                amount: amount,
+                amount,
             };
             SubMsg::new(WasmMsg::Execute {
                 contract_addr: token.to_string(),

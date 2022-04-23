@@ -5,21 +5,16 @@ use crate::{msg::ReceiveMsg, state::STATE};
 use cosmwasm_std::{from_binary, DepsMut, MessageInfo, Response, StdResult, Uint128};
 use cw20::{Cw20ReceiveMsg, Denom};
 
-/// Deposit the asset being stacked
-pub fn deposit_cw20(
+/// Deposit cw20 token
+fn deposit_cw20(
     deps: DepsMut,
     info: MessageInfo,
     wrapper: Cw20ReceiveMsg,
 ) -> Result<Response, ContractError> {
-    // save the sender
-    let sender = deps.api.addr_validate(&wrapper.sender)?;
-
-    // decode the inner instructions
-    let received: ReceiveMsg = from_binary(&wrapper.msg)?;
-
     // check what cw20 we received and how much we recived
     let denom_received = Denom::Cw20(info.sender);
     let amount_received = wrapper.amount;
+    let sender = deps.api.addr_validate(&wrapper.sender)?;
 
     // reject deposit of an unexpected type
     let state = STATE.load(deps.storage)?;
@@ -41,6 +36,19 @@ pub fn deposit_cw20(
         },
     )?;
     Ok(Response::new().add_attribute("method", "deposit"))
+}
+/// Deposit the asset being stacked
+pub fn receive_cw20(
+    deps: DepsMut,
+    info: MessageInfo,
+    wrapper: Cw20ReceiveMsg,
+) -> Result<Response, ContractError> {
+    // decode the inner instructions
+    let received: ReceiveMsg = from_binary(&wrapper.msg)?;
+
+    match received {
+        ReceiveMsg::Deposit {} => deposit_cw20(deps, info, wrapper),
+    }
 }
 
 /// withdraw stacked cw20 assets
