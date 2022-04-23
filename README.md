@@ -10,7 +10,7 @@ All the deployment scripts a in the `deploy` folder.
 To deploy, you will need a resonably recent version of python 3.
 
 To install the dependencies use pip:
-```
+```sh
 cd deploy
 pipenv install -r requirements.txt 
 ```
@@ -23,17 +23,18 @@ In order to deploy you will need to :
 The secret key file is excluded from github. There is one config file per deployment environment (ex: testnet).
 
 The deployment command is 
-```
+```sh
 cd deploy
 pipenv run python3 deploy.py --config testnet.conf
 ```
 
-## How to use the test scripts
+## How to use the tests scripts
 
 You will need a resonably recent version of python (I have tested with Python 3.8.9).
 
 To install the dependencies use pip:
-```
+```sh
+cd tests
 pipenv install -r requirements.txt
 ```
 
@@ -45,8 +46,14 @@ In order to run tests you will need to :
 The secret key file is excluded from github. 
 
 The test command should look like this:
-```
-python3 deposit.py 
+```sh
+pipenv shell
+python3 deposit.py --reward_contract $REWARD --cw20_contract $TOKEN --amount 1000
+python3 withdraw.py --reward_contract $REWARD --amount 1000
 ```
 
-Vault is the main contract vault and strategy is the name of the strategy to deposit to.
+## Scripts function
+
+The script can used as follow:
+- deposit.py: deposit wtoken in the reward contract
+- withdraw.py: withdraw deposited wtoken from the reward contract
