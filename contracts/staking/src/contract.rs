@@ -50,6 +50,7 @@ pub fn execute(
         ExecuteMsg::Receive(msg) => executions::receive_cw20(deps, info, msg),
         ExecuteMsg::Withdraw { amount } => executions::withdraw_cw20(deps, info, amount),
         ExecuteMsg::Reward {} => executions::deposit_rewards(deps, info),
+        ExecuteMsg::Claim {} => executions::claim(deps, info),
     }
 }
 

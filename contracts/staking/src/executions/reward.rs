@@ -1,5 +1,6 @@
 use crate::state::{DEPOSITED, STATE, EARNED, Balance};
 use crate::ContractError;
+use crate::utils::send_balance;
 use cosmwasm_std::{Decimal, DepsMut, MessageInfo, Order, Response, Uint128, Addr, StdResult};
 use cw20::Denom;
 
@@ -47,4 +48,20 @@ pub fn deposit_rewards(deps: DepsMut, info: MessageInfo) -> Result<Response, Con
     Ok(Response::new()
         .add_attribute("method", "deposit_rewards")
         )
+}
+
+/// claim any accrued rewards
+pub fn claim(deps: DepsMut, info: MessageInfo) -> Result<Response, ContractError> {    
+    let earnings = EARNED.may_load(deps.storage, info.sender.to_string())?;
+    // we got nothing to send
+    if earnings.is_none() {        
+        return Ok(Response::new());
+    }    
+    let earnings = earnings.unwrap();    
+    let state = STATE.load(deps.storage)?;
+    // generate transfer message
+    let transfer_msg = send_balance(&earnings.owner, earnings.amount, state.incensitive_denom)?;
+    // remove claimed earnings
+    EARNED.remove(deps.storage, info.sender.to_string());
+    Ok(Response::new().add_submessage(transfer_msg))
 }

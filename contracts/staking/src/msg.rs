@@ -23,6 +23,9 @@ pub enum ExecuteMsg {
 
     /// Deposit reward for the stakers
     Reward {},
+
+    /// Claim accrued rewards
+    Claim {},
 }
 /// The Receive message is used to handle CW20 being sent to this contract
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
