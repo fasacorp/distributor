@@ -16,7 +16,7 @@ pipenv install -r requirements.txt
 ```
 
 In order to deploy you will need to :
-1. create a secret.key file
+1. create a secret.key file 
 2. enter the memo of a wallet you want to use to deploy
 3. run the command
 
@@ -39,7 +39,7 @@ pipenv install -r requirements.txt
 ```
 
 In order to run tests you will need to :
-1. create a secret.key file
+1. create a secret.key file (note: you can have multiple secret files)
 2. enter the memo of a wallet you want to use to deploy
 3. run the command
 
@@ -48,8 +48,8 @@ The secret key file is excluded from github.
 The test command should look like this:
 ```sh
 pipenv shell
-python3 deposit.py --reward_contract $REWARD --cw20_contract $TOKEN --amount 1000
-python3 withdraw.py --reward_contract $REWARD --amount 1000
+python3 deposit.py --reward_contract $REWARD --cw20_contract $TOKEN --amount 1000 --secret secret_2.key
+python3 withdraw.py --reward_contract $REWARD --amount 1000 --secret secret_2.key
 ```
 
 ## Scripts function
