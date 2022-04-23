@@ -16,7 +16,7 @@ pub enum ContractError {
     #[error("No withdrawable balance found")]
     NoWithdrawableBalance {},
 
-    #[error("Invalid withdrawal")]
+    #[error("Invalid withdrawal available: {} requested: {}", available, requested)]
     InvalidWithdrawal {
         available: Uint128,
         requested: Uint128,
