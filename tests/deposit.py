@@ -1,12 +1,9 @@
 import argparse
-from datetime import datetime
 import logging
-import time
 
 from terra_sdk.client.lcd import LCDClient
 from terra_sdk.core.wasm import MsgExecuteContract
 from terra_sdk.key.mnemonic import MnemonicKey
-from terra_sdk.core import Coin
 import json
 from base64 import b64encode
 from terra_sdk.client.lcd.api.tx import CreateTxOptions
