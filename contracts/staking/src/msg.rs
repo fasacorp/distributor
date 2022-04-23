@@ -41,6 +41,6 @@ pub enum QueryMsg {
 pub struct BalanceResponse {
     pub amount: Uint128,
     pub denom: Denom,
-    pub earned:  Uint128,
+    pub earned: Uint128,
     pub earned_denom: Denom,
 }

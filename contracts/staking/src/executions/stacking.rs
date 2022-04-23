@@ -66,7 +66,7 @@ pub fn withdraw_cw20(
             .add_submessage(send_balance(&deposit.owner, amount, state.stakable_denom)?);
 
         // update balance
-        deposit.amount -= amount;        
+        deposit.amount -= amount;
         if deposit.amount.is_zero() {
             // if the new balance is 0 withdraw earnings too before destroying the entry
             response = response.add_submessage(send_balance(
@@ -76,8 +76,7 @@ pub fn withdraw_cw20(
             )?);
             // we don't need this anymore
             DEPOSITED.remove(deps.storage, info.sender.to_string());
-        }
-        else{
+        } else {
             DEPOSITED.save(deps.storage, info.sender.to_string(), &deposit)?;
         }
 
