@@ -16,7 +16,7 @@ fn instantiate_contract() -> OwnedDeps<MockStorage, MockApi, MockQuerier> {
         incensitive_denom: Denom::Native("uusd".to_string()),
         stakable_denom: Denom::Cw20(Addr::unchecked("WTOKEN")),
     };
-    instantiate(deps.as_mut(), mock_env(), info.clone(), msg).unwrap();
+    instantiate(deps.as_mut(), mock_env(), info, msg).unwrap();
 
     deps
 }
