@@ -1,15 +1,15 @@
 # Distributor
 
-A simple reward distributionb contract. It's using the standard implementation of cw20-base
-from cw-plus and my own stacking/reward contract
+A simple reward distribution contract. It's using the standard implementation of cw20-base
+from cw-plus and my own stacking/reward contract.
 
 
 
 ## How to deploy
-All the deployment scripts a in the `deploy` folder.
+All the deployment scripts are in the `deploy` folder.
 To deploy, you will need a resonably recent version of python 3.
 
-To install the dependencies use pip:
+To install the dependencies use pipenv:
 ```sh
 cd deploy
 pipenv install -r requirements.txt 
@@ -32,14 +32,14 @@ pipenv run python3 deploy.py --config testnet.conf
 
 You will need a resonably recent version of python (I have tested with Python 3.8.9).
 
-To install the dependencies use pip:
+To install the dependencies use pipenv:
 ```sh
 cd tests
 pipenv install -r requirements.txt
 ```
 
 In order to run tests you will need to :
-1. create a secret.key file (note: you can have multiple secret files)
+1. create a secret.key file containing the memomnic (note: you can have multiple secret files)
 2. enter the memo of a wallet you want to use to deploy
 3. run the command
 
@@ -78,3 +78,5 @@ python3 withdraw.py --reward_contract $REWARD --amount 1000 --secret secret_3.ke
 The script can used as follow:
 - deposit.py: deposit wtoken in the reward contract
 - withdraw.py: withdraw deposited wtoken from the reward contract
+- claim.py: claim the accrued earnings
+- reward.py: send rewards to the contract
