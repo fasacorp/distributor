@@ -3,7 +3,10 @@
 A simple reward distribution contract. It's using the standard implementation of cw20-base
 from cw-plus and my own stacking/reward contract.
 
-
+## Testnet deployment
+The contracts deployed to the testnet are:
+- wtoken: terra1mjddpgxshxey00ldmyu0uzhvcggs6484syxerg
+- staking: terra1d4xnyjujrxn4lwyqrhj8k7v792h0nqevm5zfla
 
 ## How to deploy
 All the deployment scripts are in the `deploy` folder.
